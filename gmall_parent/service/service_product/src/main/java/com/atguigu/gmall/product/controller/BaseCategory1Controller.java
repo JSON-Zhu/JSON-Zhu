@@ -29,4 +29,12 @@ public class BaseCategory1Controller {
        BaseCategory1 baseCategory1= baseCategory1Service.getById(id);
        return Result.ok(baseCategory1);
     }
+    /**
+     * 查询素有数据
+     */
+    @GetMapping("/getAll")
+    public Result getAll(){
+        return Result.ok(baseCategory1Service.getAll());
+    }
+
 }

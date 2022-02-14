@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 一级分类的接口类的实现
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class BaseCategory1ServiceImpl implements BaseCategory1Service {
+
 
     @Resource
     private BaseCategory1Mapper baseCategory1Mapper;
@@ -29,5 +31,17 @@ public class BaseCategory1ServiceImpl implements BaseCategory1Service {
     public BaseCategory1 getById(Long id) {
         BaseCategory1 baseCategory1 = baseCategory1Mapper.selectById(id);
         return baseCategory1;
+    }
+
+    /**
+     * 获取所有的数据
+     *
+     * @return
+     */
+    @Override
+    public List<BaseCategory1> getAll() {
+        List<BaseCategory1> baseCategory1List =
+                baseCategory1Mapper.selectList(null);
+        return baseCategory1List;
     }
 }
