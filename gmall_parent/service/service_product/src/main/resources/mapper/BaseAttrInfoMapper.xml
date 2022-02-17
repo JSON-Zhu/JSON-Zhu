@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--namespace表示和mapper类文件对应 使用全路径名-->
+<mapper namespace="com.atguigu.gmall.product.mapper.BaseAttrInfoMapper">
+<!--    自定义的返回结果集映射-->
+    <resultMap id="baseAttrInfoResultMap" type="com.atguigu.gmall.model.product.BaseAttrInfo" autoMapping="true">
+        <id property="id" column="id"></id>
+<!--        自动的映射 根据平台属性的id,将值进行保存-->
+        <collection property="attrValueList" ofType="com.atguigu.gmall.model.product.BaseAttrValue" autoMapping="true">
+            <id property="id" column="base_attr_value_id"></id>
+        </collection>
+    </resultMap>
+<!--    根据分类的id(一级 二级 三级)查询平台属性的信息-->
+    <select id="selectBaseAttrInfoByCategoryId" resultMap="baseAttrInfoResultMap">
+        SELECT
+            b1.attr_name,
+            b1.category_id,
+            b1.category_level,
+            b1.id,
+            b2.id as base_attr_value_id,
+            b2.attr_id,
+            b2.value_name
+        FROM
+            base_attr_info b1
+        INNER JOIN
+            base_attr_value b2 ON b1.id=b2.attr_id
+        <where>
+            <if test="category1Id !=null and category1Id !=0">
+                or   (b1.category_id=#{category1Id} and b1.category_level=1)
+            </if>
+            <if test="category2Id !=null and category2Id !=0">
+                or   (b1.category_id=#{category2Id} and b1.category_level=2)
+            </if>
+            <if test="category3Id !=null and category3Id !=0">
+                or   (b1.category_id=#{category3Id} and b1.category_level=3)
+            </if>
+        </where>
+
+    </select>
+</mapper>

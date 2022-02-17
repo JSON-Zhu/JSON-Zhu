@@ -1,6 +1,7 @@
 package com.atguigu.gmall.product.service;
 
 import com.atguigu.gmall.model.product.BaseCategory1;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;
 
@@ -20,4 +21,46 @@ public interface BaseCategory1Service {
      * @return
      */
     List<BaseCategory1> getAll();
+
+    /**
+     * 新增数据
+     * @param baseCategory1
+     */
+    void add(BaseCategory1 baseCategory1);
+
+    /**
+     * 修改数据
+     * @param baseCategory1
+     */
+    void update(BaseCategory1 baseCategory1);
+
+    /**
+     * 删除数据
+     * @param id
+     */
+    void delete(Long id);
+
+    /**
+     * 条件查询
+     * @param baseCategory1
+     * @return
+     */
+    List<BaseCategory1> query(BaseCategory1 baseCategory1);
+
+    /**
+     * 分页查询
+     * @param page 当前页面
+     * @param limit 每页数量
+     * @return
+     */
+    IPage page(Integer page, Integer limit);
+
+    /**
+     * 带条件分页查询
+     * @param page
+     * @param limit
+     * @param baseCategory1
+     * @return
+     */
+    IPage query(Integer page, Integer limit, BaseCategory1 baseCategory1);
 }
