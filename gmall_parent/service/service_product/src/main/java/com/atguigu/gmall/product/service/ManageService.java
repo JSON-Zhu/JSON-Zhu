@@ -1,6 +1,8 @@
 package com.atguigu.gmall.product.service;
 
 import com.atguigu.gmall.model.product.*;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -62,4 +64,40 @@ public interface ManageService {
      * @return
      */
     List<BaseSaleAttr> baseSaleAttrList();
+
+    /**
+     * 保存spuInfo
+     * @param spuInfo
+     */
+    void saveSpuInfo(SpuInfo spuInfo);
+
+    /**
+     * 查询spuInfo列表
+     * @param page
+     * @param size
+     * @param category3Id
+     * @return : com.baomidou.mybatisplus.core.metadata.IPage<com.atguigu.gmall.model.product.SpuInfo>
+     */
+    IPage<SpuInfo> getSpuInfoList(Integer page, Integer size, Long category3Id);
+
+    /**
+     * 根据spuId获取销售属性值的列表
+     * @param spuId
+     * @return : java.util.List<com.atguigu.gmall.model.product.SpuSaleAttr>
+     */
+    List<SpuSaleAttr> getSpuSaleAttrList(Long spuId);
+
+    /**
+     * 根据spuId获取图片列表
+     * @param spuId
+     * @return : java.util.List<com.atguigu.gmall.model.product.SpuImage>
+     */
+    List<SpuImage> getSpuImageList(Long spuId);
+
+    /**
+     * 保存SkuInfo
+     * @param skuInfo
+     * @return : void
+     */
+    void saveSkuInfo(SkuInfo skuInfo);
 }

@@ -3,11 +3,16 @@ package com.atguigu.gmall.product.controller;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.service.ManageService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 管理控制台的控制器
+ * @author XQ.Zhu
+ */
 @RestController
 @RequestMapping(value = "/admin/product")
 public class ManageController {
@@ -98,4 +103,51 @@ public class ManageController {
     public Result baseSaleAttrList(){
        return Result.ok(manageService.baseSaleAttrList());
     }
+
+    /**
+     * 保存spu信息
+     * @param spuInfo
+     * @return : void
+     */
+    @PostMapping(value = "/saveSpuInfo")
+    public void saveSpuInfo(@RequestBody SpuInfo spuInfo){
+        manageService.saveSpuInfo(spuInfo);
+    }
+
+    /**
+     * 查询spuInfo列表
+     * @param page
+     * @param size
+     * @param category3Id
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value = "/{page}/{size}")
+    public Result getSpuInfoList(@PathVariable("page") Integer page,
+                                 @PathVariable("size") Integer size,
+                                 @RequestParam("category3Id") Long category3Id
+                                 ){
+        IPage<SpuInfo> spuInfoList = manageService.getSpuInfoList(page, size, category3Id);
+        return Result.ok(spuInfoList);
+    }
+
+    /**
+     * 查询销售属性的列表
+     * @param spuId
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value = "spuSaleAttrList/{spuId}")
+    public Result getSpuSaleAttrList(@PathVariable("spuId")Long spuId){
+        return Result.ok(manageService.getSpuSaleAttrList(spuId));
+    }
+
+    /**
+     * 根据spuId获取图片列表
+     * @param spuId
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value = "spuImageList/{spuId}")
+    public Result getSpuImageList(@PathVariable("spuId") Long spuId){
+        return Result.ok(manageService.getSpuImageList(spuId));
+    }
+
 }

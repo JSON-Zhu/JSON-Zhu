@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 
+/**
+ * 商品管理的启动类
+ */
 @SpringBootApplication
 @ComponentScan("com.atguigu.gmall")
 @EnableDiscoveryClient

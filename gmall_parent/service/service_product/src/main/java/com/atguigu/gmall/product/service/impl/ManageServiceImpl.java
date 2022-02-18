@@ -4,12 +4,18 @@ import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.service.ManageService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * 管理控制台接口的实现类,实现管理控制台页面的接口
+ * @author XQ.Zhu
+ */
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class ManageServiceImpl implements ManageService {
@@ -173,6 +179,190 @@ public class ManageServiceImpl implements ManageService {
     @Override
     public List<BaseSaleAttr> baseSaleAttrList() {
         return baseSaleAttrMapper.selectList(null);
+    }
+
+    @Resource
+    private SpuInfoMapper spuInfoMapper;
+    /**
+     * 保存spuInfo
+     * @Author: XQ.Zhu
+     * @Date: 2022/2/18 17:34
+     * @param spuInfo
+     * @return : void
+     */
+    @Override
+    public void saveSpuInfo(SpuInfo spuInfo) {
+        //check spuInfo
+        if(spuInfo==null){
+            throw new RuntimeException("参数错误");
+        }
+        //判断修改还是新增
+        Long spuInfoId = spuInfo.getId();
+        if(spuInfoId==null){
+            //insert
+            //保存到spuInfo表
+            int insert = spuInfoMapper.insert(spuInfo);
+            if(insert<=0){
+                throw new RuntimeException("保存spuInfo错误,请重试");
+            }
+        }else {
+            //update
+            int update = spuInfoMapper.updateById(spuInfo);
+            if(update<=0){
+                throw new RuntimeException("修改spuInfo错误,请重试");
+            }
+            //删除旧的图片,销售属性,销售属性值
+            spuImageMapper.delete(new LambdaQueryWrapper<SpuImage>()
+                    .eq(SpuImage::getSpuId,spuInfoId));
+
+            spuSaleAttrMapper.delete(new LambdaQueryWrapper<SpuSaleAttr>()
+                    .eq(SpuSaleAttr::getSpuId,spuInfoId));
+
+            spuSaleAttrValueMapper.delete(new LambdaQueryWrapper<SpuSaleAttrValue>()
+                    .eq(SpuSaleAttrValue::getSpuId,spuInfoId));
+        }
+
+        //获取spu id
+        Long spuId = spuInfo.getId();
+        //保存spuImage信息
+        saveSpuImageList(spuId,spuInfo.getSpuImageList());
+
+        //保存销售属性
+        saveSpuAttrList(spuId,spuInfo.getSpuSaleAttrList());
+
+    }
+
+    /**
+     * 查询spuInfo列表
+     * @param page
+     * @param size
+     * @param category3Id
+     * @return : com.baomidou.mybatisplus.core.metadata.IPage<com.atguigu.gmall.model.product.SpuInfo>
+     */
+    @Override
+    public IPage<SpuInfo> getSpuInfoList(Integer page, Integer size, Long category3Id) {
+        IPage<SpuInfo> spuInfoIPage = spuInfoMapper.selectPage(new Page<SpuInfo>(page, size),
+                new LambdaQueryWrapper<SpuInfo>().eq(SpuInfo::getCategory3Id, category3Id));
+        return spuInfoIPage;
+    }
+
+    /**
+     * 根据spuId获取销售属性值的列表
+     *
+     * @param spuId
+     * @return : java.util.List<com.atguigu.gmall.model.product.SpuSaleAttr>
+     */
+    @Override
+    public List<SpuSaleAttr> getSpuSaleAttrList(Long spuId) {
+        return spuSaleAttrMapper.getSpuSaleAttrValueBySpuId(spuId);
+    }
+
+    /**
+     * 根据spuId获取图片列表
+     *
+     * @param spuId
+     * @return : java.util.List<com.atguigu.gmall.model.product.SpuImage>
+     */
+    @Override
+    public List<SpuImage> getSpuImageList(Long spuId) {
+
+        return spuImageMapper.selectList(new LambdaQueryWrapper<SpuImage>()
+                .eq(SpuImage::getSpuId,spuId));
+    }
+
+    @Resource
+    private SkuInfoMapper skuInfoMapper;
+    /**
+     * 保存SkuInfo
+     *
+     * @param skuInfo
+     * @return : void
+     */
+    @Override
+    public void saveSkuInfo(SkuInfo skuInfo) {
+        //检查参数
+        if(skuInfo==null){
+            throw new RuntimeException("参数错误");
+        }
+        //判断更新或者删除
+        if(skuInfo.getId()==null){
+            int insert = skuInfoMapper.insert(skuInfo);
+            if(insert<=0){
+                throw new RuntimeException("新增Sku失败");
+            }
+        }else {
+            int update = skuInfoMapper.updateById(skuInfo);
+
+        }
+    }
+
+    @Resource
+    private SpuSaleAttrMapper spuSaleAttrMapper;
+    /**
+     * 保存销售属性
+     * @param spuId
+     * @param spuSaleAttrList
+     * @return : void
+     */
+    private void saveSpuAttrList(Long spuId, List<SpuSaleAttr> spuSaleAttrList) {
+        //保存销售属性
+        spuSaleAttrList.stream().forEach(spuSaleAttr -> {
+            //set spuId
+            spuSaleAttr.setSpuId(spuId);
+            //保存spu销售属性名称表,保存完成以后,销售属性名称就有了id
+            int insert = spuSaleAttrMapper.insert(spuSaleAttr);
+            if(insert<=0){
+                throw new RuntimeException("保存spuSaleAttr错误,请重试");
+            }
+            //获取销售属性的值
+            List<SpuSaleAttrValue> spuSaleAttrValueList = spuSaleAttr.getSpuSaleAttrValueList();
+            //保存销售属性的值
+            saveSpuAttrValueList(spuId,spuSaleAttr.getSaleAttrName(),spuSaleAttrValueList);
+        });
+    }
+
+    @Resource
+    private SpuSaleAttrValueMapper spuSaleAttrValueMapper;
+    /**
+     * 保存销售属性值表
+     * @param spuId
+     * @param saleAttrName
+     * @param spuSaleAttrValueList
+     * @return : void
+     */
+    private void saveSpuAttrValueList(Long spuId,
+                                      String saleAttrName,
+                                      List<SpuSaleAttrValue> spuSaleAttrValueList) {
+        //save 属性值表
+        spuSaleAttrValueList.stream().forEach(spuSaleAttrValue -> {
+            //set spuId
+            spuSaleAttrValue.setSpuId(spuId);
+            spuSaleAttrValue.setSaleAttrName(saleAttrName);
+            int insert = spuSaleAttrValueMapper.insert(spuSaleAttrValue);
+            if(insert<=0){
+                throw new RuntimeException("保存spuAttrValue错误,请重试");
+            }
+        });
+    }
+
+    @Resource
+    private SpuImageMapper spuImageMapper;
+    /**
+     * 保存SpuImage
+     * @param spuId
+     * @param spuImageList
+     * @return : void
+     */
+    private void saveSpuImageList(Long spuId, List<SpuImage> spuImageList) {
+        //save spuImage
+        spuImageList.stream().forEach(spuImage -> {
+            //set spuId
+            spuImage.setSpuId(spuId);
+            int insert = spuImageMapper.insert(spuImage);
+            if(insert<=0){
+                throw new RuntimeException("保存spuImage错误,请重试");
+            }
+        });
     }
 }
 
