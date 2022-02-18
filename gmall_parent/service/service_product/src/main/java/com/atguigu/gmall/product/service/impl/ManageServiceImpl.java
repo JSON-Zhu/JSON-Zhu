@@ -31,6 +31,9 @@ public class ManageServiceImpl implements ManageService {
 
     @Resource
     private BaseTrademarkMapper baseTrademarkMapper;
+
+    @Resource
+    private BaseSaleAttrMapper baseSaleAttrMapper;
     /**
      * 查询所有的一级分类
      *
@@ -160,6 +163,16 @@ public class ManageServiceImpl implements ManageService {
     @Override
     public List<BaseTrademark> getTrademarkList() {
         return baseTrademarkMapper.selectList(null);
+    }
+
+    /**
+     * 获取属性列表
+     *
+     * @return
+     */
+    @Override
+    public List<BaseSaleAttr> baseSaleAttrList() {
+        return baseSaleAttrMapper.selectList(null);
     }
 }
 

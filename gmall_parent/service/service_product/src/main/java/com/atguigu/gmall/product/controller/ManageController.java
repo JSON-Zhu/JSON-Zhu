@@ -89,4 +89,13 @@ public class ManageController {
     public Result getTrademarkList(){
         return Result.ok(manageService.getTrademarkList());
     }
+
+    /**
+     * 获取销售属性列表
+     * @return
+     */
+    @GetMapping(value = "/baseSaleAttrList")
+    public Result baseSaleAttrList(){
+       return Result.ok(manageService.baseSaleAttrList());
+    }
 }
