@@ -2,7 +2,6 @@ package com.atguigu.gmall.product.service;
 
 import com.atguigu.gmall.model.product.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -100,4 +99,28 @@ public interface ManageService {
      * @return : void
      */
     void saveSkuInfo(SkuInfo skuInfo);
+
+    /**
+     * 查询skuInfo列表
+     * @param page
+     * @param size
+     * @return : IPage
+     */
+    IPage<SkuInfo> getSkuList(Integer page, Integer size);
+
+    /**
+     * 更新商品销售状态(1:上架, 0:下架)
+     * @param skuId
+     * @param Status
+     * @return : void
+     */
+    void updateSkuSaleStatus(Long skuId,Integer Status);
+
+    /**
+     * 查询Trademark列表
+     * @param page
+     * @param size
+     * @return : com.baomidou.mybatisplus.core.metadata.IPage
+     */
+    IPage<BaseTrademark> selectTrademarkPage(Integer page, Integer size);
 }

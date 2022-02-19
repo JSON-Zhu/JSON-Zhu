@@ -272,6 +272,12 @@ public class ManageServiceImpl implements ManageService {
 
     @Resource
     private SkuInfoMapper skuInfoMapper;
+    @Resource
+    private SkuImageMapper skuImageMapper;
+    @Resource
+    private SkuAttrValueMapper skuAttrValueMapper;
+    @Resource
+    private SkuSaleAttrValueMapper skuSaleAttrValueMapper;
     /**
      * 保存SkuInfo
      *
@@ -292,8 +298,128 @@ public class ManageServiceImpl implements ManageService {
             }
         }else {
             int update = skuInfoMapper.updateById(skuInfo);
-
+            if(update<=0){
+                throw new RuntimeException("修改Sku失败");
+            }
+            //根据skuId删除对应的skuImage,skuAttr, skuSaleAttr
+            skuImageMapper.delete(new LambdaQueryWrapper<SkuImage>().
+                    eq(SkuImage::getSkuId,skuInfo.getId()));
+            skuAttrValueMapper.delete(new LambdaQueryWrapper<SkuAttrValue>().
+                    eq(SkuAttrValue::getSkuId,skuInfo.getId()));
+            skuSaleAttrValueMapper.delete(new LambdaQueryWrapper<SkuSaleAttrValue>().
+                    eq(SkuSaleAttrValue::getSkuId,skuInfo.getId()));
         }
+        //保存skuImage
+        saveSkuImageList(skuInfo.getId(),skuInfo.getSkuImageList());
+        //保存sku平台属性值
+        saveSkuAttrValueList(skuInfo.getId(),skuInfo.getSkuAttrValueList());
+        //保存sku销售属性值
+        saveSkuSaleAttrValueList(skuInfo.getId(),skuInfo.getSkuSaleAttrValueList(),skuInfo.getSpuId());
+
+    }
+
+    /**
+     * 获取skuInfo列表
+     * @param page
+     * @param size
+     * @return : com.baomidou.mybatisplus.core.metadata.IPage<com.atguigu.gmall.model.product.SkuInfo>
+     */
+    @Override
+    public IPage<SkuInfo> getSkuList(Integer page, Integer size) {
+        IPage<SkuInfo> skuInfoIPage = skuInfoMapper.selectPage(new Page<>(page, size), null);
+        return skuInfoIPage;
+    }
+
+    /**
+     * 更新商品上架状态
+     * @param skuId
+     * @param Status
+     * @return : void
+     */
+    @Override
+    public void updateSkuSaleStatus(Long skuId, Integer Status) {
+        //参数校验
+        if(skuId==null||Status==null){
+            throw new RuntimeException("参数错误");
+        }
+        //查询商品数据并判断
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        if(skuInfo==null||skuInfo.getId()==null){
+            throw new RuntimeException("商品不存在,无法完成上下架");
+        }
+        //更新装填
+        skuInfo.setIsSale(Status);
+        skuInfoMapper.updateById(skuInfo);
+    }
+
+    /**
+     * 查询Trademark列表
+     *
+     * @param page
+     * @param size
+     * @return : com.baomidou.mybatisplus.core.metadata.IPage
+     */
+    @Override
+    public IPage<BaseTrademark> selectTrademarkPage(Integer page, Integer size) {
+        IPage<BaseTrademark> trademarkIPage = baseTrademarkMapper.
+                selectPage(new Page<>(page, size), null);
+        return trademarkIPage;
+    }
+
+    /**
+     * 保存sku销售属性
+     * @param id
+     * @param skuSaleAttrValueList
+     * @param spuId
+     * @return : void
+     */
+    private void saveSkuSaleAttrValueList(Long id, List<SkuSaleAttrValue> skuSaleAttrValueList, Long spuId) {
+        skuSaleAttrValueList.stream().forEach(skuSaleAttrValue -> {
+            //补全skuId
+            skuSaleAttrValue.setSkuId(id);
+            //补全spuId
+            skuSaleAttrValue.setSpuId(spuId);
+            //save
+            int insert = skuSaleAttrValueMapper.insert(skuSaleAttrValue);
+            if(insert<=0){
+                throw new RuntimeException("保存sku的销售属性失败");
+            }
+        });
+    }
+
+    /**
+     * 保存sku平台属性
+     * @param id
+     * @param skuAttrValueList
+     * @return : void
+     */
+    private void saveSkuAttrValueList(Long id, List<SkuAttrValue> skuAttrValueList) {
+        skuAttrValueList.stream().forEach(skuAttrValue -> {
+            //补全skuId
+            skuAttrValue.setSkuId(id);
+            //save
+            int insert = skuAttrValueMapper.insert(skuAttrValue);
+            if(insert<=0){
+                throw new RuntimeException("保存sku的属性失败");
+            }
+        });
+    }
+
+    /**
+     * 保存Sku图片列表
+     * @param id
+     * @param skuImageList
+     * @return : void
+     */
+    private void saveSkuImageList(Long id, List<SkuImage> skuImageList) {
+        skuImageList.stream().forEach(skuImage -> {
+            //set spuId
+            skuImage.setSkuId(id);
+            int insert = skuImageMapper.insert(skuImage);
+            if(insert<=0){
+                throw new RuntimeException("保存sKuImage错误,请重试");
+            }
+        });
     }
 
     @Resource

@@ -1,5 +1,6 @@
 package com.atguigu.gmall.product.controller;
 
+import com.atguigu.gmall.common.constant.ProductConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.service.ManageService;
@@ -150,4 +151,61 @@ public class ManageController {
         return Result.ok(manageService.getSpuImageList(spuId));
     }
 
+    /**
+     * 保存skuInfo
+     * @param skuInfo
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @PostMapping(value = "/saveSkuInfo")
+    public Result saveSkuInfo(@RequestBody SkuInfo skuInfo){
+        manageService.saveSkuInfo(skuInfo);
+        return Result.ok();
+    }
+
+    /**
+     * 分页查询skuInfo
+     * @param page
+     * @param size
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value="/list/{page}/{size}" )
+    public Result getSkuInfoPage(@PathVariable("page") Integer page,
+                                 @PathVariable("size") Integer size){
+
+        return Result.ok(manageService.getSkuList(page, size));
+    }
+
+    /**
+     * 商品下架
+     * @param skuId
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value = "/cancelSale/{skuId}")
+    public Result cancelSale(@PathVariable("skuId")Long skuId){
+        manageService.updateSkuSaleStatus(skuId, ProductConst.SKU_CANCEL_SALE);
+        return Result.ok();
+    }
+
+    /**
+     * 商品上架
+     * @param skuId
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value = "/onSale/{skuId}")
+    public Result onSale(@PathVariable("skuId")Long skuId){
+        manageService.updateSkuSaleStatus(skuId, ProductConst.SKU_ON_SALE);
+        return Result.ok();
+    }
+
+    /**
+     * 查询trademark列表
+     * @param page
+     * @param size
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value="/baseTrademark/{page}/{size}" )
+    public Result getTrademarkList(@PathVariable("page") Integer page,
+                                 @PathVariable("size") Integer size){
+        return Result.ok(manageService.selectTrademarkPage(page, size));
+    }
 }
