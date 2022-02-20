@@ -21,4 +21,12 @@ public interface SpuSaleAttrMapper extends BaseMapper<SpuSaleAttr> {
      * @return : java.util.List<com.atguigu.gmall.model.product.SpuSaleAttr>
      */
     List<SpuSaleAttr> getSpuSaleAttrValueBySpuId(@Param(value = "spuId") Long spuId);
+
+    /**
+     * 根据spuId和skuId查询销售属性和值,同时表示当前的sku所属的销售属性值
+     * @param skuId
+     * @param spuId
+     * @return : java.util.List<com.atguigu.gmall.model.product.SpuSaleAttr>
+     */
+    List<SpuSaleAttr> getSpuSaleAttrBySpuIdAndSkuId(@Param(value = "skuId")Long skuId,@Param(value = "spuId") Long spuId);
 }

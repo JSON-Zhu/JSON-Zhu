@@ -17,6 +17,7 @@
     <modules>
         <module>service_product</module>
         <module>service_gateway</module>
+        <module>service_item</module>
     </modules>
 
     <dependencies>

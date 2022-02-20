@@ -7,6 +7,7 @@
             <id property="id" column="spu_sale_attr_value_id"></id>
         </collection>
     </resultMap>
+<!--   根据spu的id查询出这个spu的销售属性和销售属性值的列表 -->
     <select id="getSpuSaleAttrValueBySpuId" resultMap="spuAttrValueResultMap">
         SELECT
             t1.id,
@@ -21,5 +22,28 @@
             AND t1.spu_id = t2.spu_id
         WHERE
             t1.spu_id=#{spuId}
+    </select>
+
+    <!--   根据spuId和skuId查询销售属性和值,同时表示当前的sku所属的销售属性值
+    (sql语句中,第三个表使用left join,制造null,方便添加isChecked字段) -->
+    <select id="getSpuSaleAttrBySpuIdAndSkuId" resultMap="spuAttrValueResultMap">
+        SELECT
+            t1.id,
+            t1.spu_id,
+            t1.sale_attr_name,
+            t2.sale_attr_value_name,
+            t2.id AS spu_sale_attr_value_id,
+        IF
+          (t3.sku_id IS NULL,0,1) AS isChecked
+        FROM
+            spu_sale_attr t1
+            INNER JOIN spu_sale_attr_value t2 on t1.spu_id=t2.spu_id
+            AND t1.base_sale_attr_id=t2.base_sale_attr_id
+            LEFT JOIN sku_sale_attr_value t3 ON t3.sku_id=#{skuId}
+            AND t3.sale_attr_value_id=t2.id
+        WHERE
+            t1.spu_id=#{spuId}
+        ORDER BY
+            t1.base_sale_attr_id
     </select>
 </mapper>
