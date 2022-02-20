@@ -14,6 +14,7 @@
     <description>所有微服务的feign接口的父工程模块</description>
     <modules>
         <module>service_product_client</module>
+        <module>service_item_client</module>
     </modules>
 
     <dependencies>

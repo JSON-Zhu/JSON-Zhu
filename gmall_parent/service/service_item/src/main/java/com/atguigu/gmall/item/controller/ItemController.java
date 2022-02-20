@@ -1,6 +1,5 @@
 package com.atguigu.gmall.item.controller;
 
-import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,9 +24,14 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
+    /**
+     * 获取商品详情
+     * @param skuId
+     * @return : java.util.HashMap<java.lang.String,java.lang.Object>
+     */
     @GetMapping(value = "/getItemInfo/{skuId}")
-    public Result getItemInfo(@PathVariable(value = "skuId")Long skuId){
+    public HashMap<String, Object> getItemInfo(@PathVariable(value = "skuId")Long skuId){
         HashMap<String, Object> skuItem = itemService.getSkuItem(skuId);
-        return Result.ok(skuItem);
+        return skuItem;
     }
 }
