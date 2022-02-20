@@ -16,7 +16,6 @@
     <description>微服务的父工程模块</description>
     <modules>
         <module>service_product</module>
-        <module>service_gateway</module>
         <module>service_item</module>
     </modules>
 
