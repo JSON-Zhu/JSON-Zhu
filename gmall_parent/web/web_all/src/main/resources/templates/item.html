@@ -10,9 +10,9 @@
 
 	<!-- 引入样式 -->
 	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-	<link rel="stylesheet" type="text/css" href="/css/all.css" />
-	<link rel="stylesheet" type="text/css" href="/css/pages-item.css" />
-	<link rel="stylesheet" type="text/css" href="/css/pages-zoom.css" />
+	<link rel="stylesheet" type="text/css" href="./css/all.css" />
+	<link rel="stylesheet" type="text/css" href="./css/pages-item.css" />
+	<link rel="stylesheet" type="text/css" href="./css/pages-zoom.css" />
 </head>
 
 <body>
@@ -1916,7 +1916,8 @@
 <!--								</dd>-->
 
 								<dd>
-									<a href="javascript:;" th:class="${spuSaleAttrValue.isChecked}==1?'selected':''" th:each="spuSaleAttrValue:${spuSaleAttr.spuSaleAttrValueList}">
+									<a href="javascript:;" th:class="${spuSaleAttrValue.isChecked}==1?'selected':''"
+									   th:each="spuSaleAttrValue:${spuSaleAttr.spuSaleAttrValueList}">
 										<div th:text="${spuSaleAttrValue.saleAttrValueName}"></div>
 										<span title="点击取消选择">&nbsp;</span>
 									</a>
@@ -2741,7 +2742,7 @@
 	<script type="text/javascript" src="/js/plugins/sui/sui.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.jqzoom/zoom.js"></script>
-	<script type="text/javascript" src="./js/plugins/updateimg.js"></script>
+	<script type="text/javascript" src="/js/plugins/updateimg.js"></script>
 	<!-- 引入组件库 -->
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.8/dist/vue.js"></script>
 	<script src="https://cdn.bootcss.com/element-ui/2.5.4/index.js"></script>
