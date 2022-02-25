@@ -4,6 +4,7 @@ import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.service.ItemService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -118,5 +119,31 @@ public class ItemServiceImpl implements ItemService {
             result.put(skuId,valuesId);
         });
         return result;
+    }
+
+    @Resource
+    private BaseTrademarkMapper baseTrademarkMapper;
+    /**
+     * 根据id获取商标信息
+     *
+     * @param id
+     * @return : com.atguigu.gmall.model.product.BaseTrademark
+     */
+    @Override
+    public BaseTrademark getBaseTrademark(Long id) {
+        BaseTrademark baseTrademark = baseTrademarkMapper.selectById(id);
+        return baseTrademark;
+    }
+    @Resource
+    private BaseAttrInfoMapper baseAttrInfoMapper;
+    /**
+     * 根据skuId获取平台属性和值
+     *
+     * @param skuId
+     * @return : java.util.List<com.atguigu.gmall.model.product.BaseAttrInfo>
+     */
+    @Override
+    public List<BaseAttrInfo> selectBaseAttrInfoBySkuId(Long skuId) {
+        return baseAttrInfoMapper.selectBaseAttrInfoBySkuId(skuId);
     }
 }

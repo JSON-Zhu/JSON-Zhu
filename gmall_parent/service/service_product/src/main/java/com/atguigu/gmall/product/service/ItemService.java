@@ -1,9 +1,7 @@
 package com.atguigu.gmall.product.service;
 
-import com.atguigu.gmall.model.product.BaseCategoryView;
-import com.atguigu.gmall.model.product.SkuImage;
-import com.atguigu.gmall.model.product.SkuInfo;
-import com.atguigu.gmall.model.product.SpuSaleAttr;
+import com.atguigu.gmall.model.product.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -60,4 +58,18 @@ public interface ItemService {
      * @return : java.util.Map
      */
     Map getSkuIdAndSaleAttrValues(Long spuId);
+
+    /**
+     * 根据id获取商标信息
+     * @param id
+     * @return : com.atguigu.gmall.model.product.BaseTrademark
+     */
+    BaseTrademark getBaseTrademark(Long id);
+
+    /**
+     * 根据skuId获取平台属性和值
+     * @param skuId
+     * @return : java.util.List<com.atguigu.gmall.model.product.BaseAttrInfo>
+     */
+    List<BaseAttrInfo> selectBaseAttrInfoBySkuId(Long skuId);
 }

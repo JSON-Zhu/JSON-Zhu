@@ -1,10 +1,7 @@
 package com.atguigu.gmall.product.controller;
 
 import com.atguigu.gmall.common.cache.GmallCache2;
-import com.atguigu.gmall.model.product.BaseCategoryView;
-import com.atguigu.gmall.model.product.SkuImage;
-import com.atguigu.gmall.model.product.SkuInfo;
-import com.atguigu.gmall.model.product.SpuSaleAttr;
+import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,5 +94,27 @@ public class ItemController {
     @GmallCache2(prefix = "skuIdAndSaleAttrValues:")
     public Map getSkuIdAndSaleAttrValues(@PathVariable(value = "spuId") Long spuId){
         return itemService.getSkuIdAndSaleAttrValues(spuId);
+    }
+
+    /**
+     * 根据id获取商标信息
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/getBaseTrademark/{id}")
+    @GmallCache2(prefix = "baseTrademark:")
+    public BaseTrademark getBaseTrademark(@PathVariable(value = "id") Long id){
+        return itemService.getBaseTrademark(id);
+    }
+
+    /**
+     * 根据skuId获取平台属性和值
+     * @param skuId
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value = "getBaseAttr/{skuId}")
+    @GmallCache2(prefix = "baseAttrInfoBySkuId:")
+    public List<BaseAttrInfo> selectBaseAttrInfoBySkuId(@PathVariable(value = "skuId")Long skuId) {
+        return itemService.selectBaseAttrInfoBySkuId(skuId);
     }
 }

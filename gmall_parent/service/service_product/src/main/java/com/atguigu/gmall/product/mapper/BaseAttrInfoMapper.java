@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * 平台属性Mapper
+ * @author XQ.Zhu
  */
 @Mapper
 public interface BaseAttrInfoMapper extends BaseMapper<BaseAttrInfo> {
@@ -25,4 +26,13 @@ public interface BaseAttrInfoMapper extends BaseMapper<BaseAttrInfo> {
             @Param("category2Id")Long category2Id,
             @Param("category3Id")Long category3Id
                                     );
+    /**
+     * 根据skuId获取平台属性和值
+     * @param skuId
+     * @return : java.util.List<com.atguigu.gmall.model.product.BaseAttrInfo>
+     */
+    List<BaseAttrInfo> selectBaseAttrInfoBySkuId(
+            @Param("skuId")Long skuId
+    );
+
 }

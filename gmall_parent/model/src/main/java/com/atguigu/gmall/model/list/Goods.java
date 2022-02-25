@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@Document(indexName = "goods" ,type = "info",shards = 3,replicas = 2)
+@Document(indexName = "goods_0823" ,type = "info",shards = 3,replicas = 2)
 public class Goods {
     // 商品Id
     @Id
@@ -26,7 +26,7 @@ public class Goods {
     private Double price;
 
     @Field(type = FieldType.Date)
-    private Date createTime; // 新品
+    private Date createTime;
 
     @Field(type = FieldType.Long)
     private Long tmId;

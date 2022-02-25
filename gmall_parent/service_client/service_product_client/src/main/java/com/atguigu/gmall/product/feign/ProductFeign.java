@@ -1,9 +1,7 @@
 package com.atguigu.gmall.product.feign;
 
-import com.atguigu.gmall.model.product.BaseCategoryView;
-import com.atguigu.gmall.model.product.SkuImage;
-import com.atguigu.gmall.model.product.SkuInfo;
-import com.atguigu.gmall.model.product.SpuSaleAttr;
+import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.model.product.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,4 +69,20 @@ public interface ProductFeign {
      */
     @GetMapping(value = "/getSkuIdAndSaleAttrValues/{spuId}")
     Map getSkuIdAndSaleAttrValues(@PathVariable(value = "spuId") Long spuId);
+
+    /**
+     * 根据id获取商标信息
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/getBaseTrademark/{id}")
+    BaseTrademark getBaseTrademark(@PathVariable(value = "id") Long id);
+
+    /**
+     * 根据skuId获取平台属性和值
+     * @param skuId
+     * @return :
+     */
+    @GetMapping(value = "getBaseAttr/{skuId}")
+    List<BaseAttrInfo> selectBaseAttrInfoBySkuId(@PathVariable(value = "skuId")Long skuId);
 }
