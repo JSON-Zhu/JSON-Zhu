@@ -1,8 +1,6 @@
 package com.atguigu.gmall.list.service;
 
-import com.atguigu.gmall.model.list.Goods;
-
-import java.util.List;
+import java.util.Map;
 
 /**
  * SearchService商品搜索的接口
@@ -16,9 +14,9 @@ public interface SearchService {
 
     /**
      * 商品搜索
-     * @param keyword
-     * @return : void
+     * @param searchData
+     * @return : java.util.Map<java.lang.String,java.lang.Object>
      */
-    List<Goods> search(String keyword);
+    Map<String,Object> search(Map<String,String> searchData);
 
 }
