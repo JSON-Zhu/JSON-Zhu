@@ -1,6 +1,5 @@
 package com.atguigu.gmall.list.controller;
 
-import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.list.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +29,7 @@ public class SearchController {
      * @return : com.atguigu.gmall.common.result.Result
      */
     @GetMapping(value = "/search")
-    public Result search(@RequestParam Map<String,String> searchData){
-        return Result.ok(searchService.search(searchData));
+    public Map<String, Object> search(@RequestParam Map<String,String> searchData){
+        return searchService.search(searchData);
     }
 }

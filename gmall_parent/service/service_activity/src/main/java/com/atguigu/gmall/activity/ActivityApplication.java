@@ -1,25 +1,24 @@
-package com.atguigu.gmall.web;
+package com.atguigu.gmall.activity;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * WebApplication
+ * ActivityApplication 秒杀服务启动类
  *
  * @author XQ.Zhu
  * @version 1.0
- * 2022/2/21 0:01
+ * 2022/3/4 22:57
  **/
-
 @SpringBootApplication
 @EnableDiscoveryClient
-@ComponentScan(basePackages = "com.atguigu.gmall")
-@EnableFeignClients(basePackages = {"com.atguigu.gmall.item.feign","com.atguigu.gmall.list.feign"})
-public class WebApplication {
+@ComponentScan("com.atguigu.gmall")
+@EnableScheduling
+public class ActivityApplication {
     public static void main(String[] args) {
-        SpringApplication.run(WebApplication.class,args);
+        SpringApplication.run(ActivityApplication.class,args);
     }
 }

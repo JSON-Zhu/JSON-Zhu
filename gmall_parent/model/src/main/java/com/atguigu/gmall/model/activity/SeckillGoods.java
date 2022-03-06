@@ -26,11 +26,11 @@ public class SeckillGoods extends BaseEntity {
 	private Long skuId;
 
 	@ApiModelProperty(value = "标题")
-	@TableField("sku_name")
+	@TableField("name")
 	private String skuName;
 
 	@ApiModelProperty(value = "商品图片")
-	@TableField("sku_default_img")
+	@TableField("small_pic")
 	private String skuDefaultImg;
 
 	@ApiModelProperty(value = "原价格")
@@ -70,7 +70,7 @@ public class SeckillGoods extends BaseEntity {
 	private Integer stockCount;
 
 	@ApiModelProperty(value = "描述")
-	@TableField("sku_desc")
+	@TableField("introduction")
 	private String skuDesc;
 
 }

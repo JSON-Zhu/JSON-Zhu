@@ -5,7 +5,6 @@ import com.atguigu.gmall.list.service.SearchService;
 import com.atguigu.gmall.model.list.Goods;
 import com.atguigu.gmall.model.list.SearchResponseAttrVo;
 import com.atguigu.gmall.model.list.SearchResponseTmVo;
-import com.atguigu.gmall.model.list.SearchResponseVo;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -16,7 +15,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
@@ -145,7 +143,12 @@ public class SearchServiceImpl implements SearchService {
             builder.sort("id", SortOrder.DESC);
         }
         //设置每页返回的数据量;固定返回100条数据
-        builder.size(100);
+        builder.size(10);
+        //获取页码
+        String pageNum = searchData.get("pageNum");
+        //计算页码
+        Integer page = getPageNum(pageNum);
+        builder.from((page-1)*100);
         //设置品牌聚合查询
         builder.aggregation(
                 AggregationBuilders.terms("aggTmId").field("tmId")
@@ -169,6 +172,21 @@ public class SearchServiceImpl implements SearchService {
         //设置条件
         searchRequest.source(builder);
         return searchRequest;
+    }
+
+    /**
+     * 计算页码
+     * @param pageNum
+     * @return : java.lang.Integer
+     */
+    private Integer getPageNum(String pageNum) {
+        try {
+            int i = Integer.parseInt(pageNum);
+            return i>0?i:1;
+        }catch (Exception e){
+            //默认显示第一页
+            return 1;
+        }
     }
 
     /**
@@ -289,7 +307,7 @@ public class SearchServiceImpl implements SearchService {
             ParsedStringTerms aggTmLogoUrl = subAggregations.get("aggTmLogoUrl");
             if(!aggTmLogoUrl.getBuckets().isEmpty()){
                 String tmLogoUrl = aggTmLogoUrl.getBuckets().get(0).getKeyAsString();
-                searchResponseTmVo.setTmName(tmLogoUrl);
+                searchResponseTmVo.setTmLogoUrl(tmLogoUrl);
             }
             //返回结果
             return searchResponseTmVo;

@@ -25,3 +25,5 @@ feign:
       default:
         readTimeout: 30000
         connectTimeout: 10000
+item:
+  url: http://page.gmall.com/
