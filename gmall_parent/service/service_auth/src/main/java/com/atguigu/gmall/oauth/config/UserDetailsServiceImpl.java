@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Base64;
+
 /**
  * 自定义授权认证类
  */
@@ -58,5 +60,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 AuthorityUtils.commaSeparatedStringToAuthorityList(""));
         //返回结果
         return userDetails;
+    }
+
+    public static void main(String[] args) {
+        byte[] decode = Base64.getMimeDecoder().decode("QUFodHRwczovL3d3dy5tbXh6eGwxLmNvbS9jb21tb24vencvMjAyMF8wMS8wNy96d19udGhVbVVoVF93bS5tcDRaWg==");
+        System.out.println("new String(decode) = " + new String(decode));
+       // eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9
+       // eyJzY29wZSI6WyJhcHAiXSwibmFtZSI6bnVsbCwiaWQiOm51bGwsImV4cCI6MjA3ODU3Mzk0NiwianRpIjoiNTIyMTFhMzYtMzdjZS00Yzg4LTkyZGQtZDMwZGZjNGY1OTBkIiwiY2xpZW50X2lkIjoiYmFuemhhbmciLCJ1c2VybmFtZSI6IjEyMzQ1NiJ9
+        //        C5A3-t7D1jBpPd6fudWs5QdwpRV7VyKuFZ9Rbax2LXVibalWtCS-8DEcL8xwsT3sG7IK1LpyQhjr7MbhUpoxIqc3jboiB1nqFkJ7EXZ6OKU1d2Ds1-OQFBfHTdHno7PtJuUE-AUSQIl9kT6_DN6txqiu1oMZuCYYpE6xIPvpwHSGY6kejSwB46t5hR23NRN7kgvHXgPnDeWLXrAG-ilARm9Rjywwfg2XXBEG9umYXm5M1UdixRGIkddfYnFnnS4PxEhW-ZKfnA-ix9iXZx_nOFM-c8THGtBqq7lTsgKqezawHI2yr4yvhMyIiDB9aaoSLtECOyhnj8sLab3rFyyYpw
+
     }
 }

@@ -20,6 +20,7 @@
         <module>service_list</module>
         <module>service_activity</module>
         <module>service_auth</module>
+        <module>service_user</module>
     </modules>
 
     <dependencies>
