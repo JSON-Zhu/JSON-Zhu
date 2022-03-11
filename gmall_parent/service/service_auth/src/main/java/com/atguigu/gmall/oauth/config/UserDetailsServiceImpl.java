@@ -1,5 +1,8 @@
 package com.atguigu.gmall.oauth.config;
+import com.atguigu.gmall.model.user.UserInfo;
+import com.atguigu.gmall.oauth.mapper.UserInfoMapper;
 import com.atguigu.gmall.oauth.util.UserJwt;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -14,6 +17,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.Base64;
 
 /**
@@ -24,6 +28,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     ClientDetailsService clientDetailsService;
+
+    @Resource
+    private UserInfoMapper userInfoMapper;
 
     /**
      * 自定义授权认证
@@ -53,10 +60,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return null;
         }
         //根据用户名查询用户信息
-        String pwd = new BCryptPasswordEncoder().encode("atguigu");
+
+        UserInfo userInfo = userInfoMapper.selectOne(
+                new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getLoginName, username));
+        if(userInfo==null||userInfo.getId()==null){
+            return null;
+        }
+
+        //String pwd = new BCryptPasswordEncoder().encode("atguigu");
         //创建User对象,校验用户名密码
         UserJwt userDetails = new UserJwt(username,
-                pwd,
+                userInfo.getPasswd(),
                 AuthorityUtils.commaSeparatedStringToAuthorityList(""));
         //返回结果
         return userDetails;

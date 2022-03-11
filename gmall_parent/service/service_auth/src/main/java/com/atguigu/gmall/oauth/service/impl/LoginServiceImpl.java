@@ -4,6 +4,8 @@ import com.atguigu.gmall.oauth.service.LoginService;
 import com.atguigu.gmall.oauth.util.AuthToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,9 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private LoadBalancerClient loadBalancerClient;
+
     /**
      * 登录
      *
@@ -52,7 +57,11 @@ public class LoginServiceImpl implements LoginService {
         MultiValueMap headers = new HttpHeaders();
         headers.add("Authorization",getHeader());
         //对localhost:9001发起请求
-        String url="http://localhost:9001/oauth/token";
+        //String url="http://localhost:9001/oauth/token"; 更新为从负载均衡动态获取
+        //以负载均衡的方式获取服务的实例
+        ServiceInstance serviceInstance = loadBalancerClient.choose("service-oauth");
+        //通过实例获取服务信息
+        String url = serviceInstance.getUri().toString()+"/oauth/token";
         //获取请求的结果 解析令牌的数据
         ResponseEntity<Map> exchange =
                 restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(params, headers), Map.class);
