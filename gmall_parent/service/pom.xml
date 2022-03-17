@@ -21,6 +21,7 @@
         <module>service_activity</module>
         <module>service_auth</module>
         <module>service_user</module>
+        <module>service_cart</module>
     </modules>
 
     <dependencies>
