@@ -4,8 +4,9 @@ import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.service.ItemService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -145,5 +146,51 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<BaseAttrInfo> selectBaseAttrInfoBySkuId(Long skuId) {
         return baseAttrInfoMapper.selectBaseAttrInfoBySkuId(skuId);
+    }
+
+    /**
+     * 扣减库存
+     *
+     * @param decreaseMap
+     * @return : boolean
+     */
+    @Override
+    public boolean decreaseStock(Map<String, Object> decreaseMap) {
+        //遍历map
+        decreaseMap.entrySet().stream().forEach(entry->{
+            //获取商品id
+            String key = entry.getKey();
+            long skuId = Long.parseLong(key);
+            Object value = entry.getValue();
+            Integer num = Integer.parseInt(value.toString());
+            int i = skuInfoMapper.decreaseStock(skuId, num);
+            if (i<=0) {
+                throw new RuntimeException("扣减库存失败");
+            }
+        });
+        return true;
+    }
+
+    /**
+     * 回滚库存
+     *
+     * @param rollbackMap
+     * @return : boolean
+     */
+    @Override
+    public boolean rollbackStock(Map<String, Object> rollbackMap) {
+        //遍历map
+        rollbackMap.entrySet().stream().forEach(entry->{
+            //获取商品id
+            String key = entry.getKey();
+            long skuId = Long.parseLong(key);
+            Object value = entry.getValue();
+            Integer num = Integer.parseInt(value.toString());
+            int i = skuInfoMapper.rollbackStock(skuId, num);
+            if (i<=0) {
+                throw new RuntimeException("回滚库存失败");
+            }
+        });
+        return true;
     }
 }

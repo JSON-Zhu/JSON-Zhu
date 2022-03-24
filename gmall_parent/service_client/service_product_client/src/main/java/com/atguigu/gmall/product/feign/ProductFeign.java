@@ -5,6 +5,7 @@ import com.atguigu.gmall.model.product.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -85,4 +86,20 @@ public interface ProductFeign {
      */
     @GetMapping(value = "getBaseAttr/{skuId}")
     List<BaseAttrInfo> selectBaseAttrInfoBySkuId(@PathVariable(value = "skuId")Long skuId);
+
+    /**
+     * 扣减库存
+     * @param decreaseMap
+     * @return
+     */
+    @GetMapping(value = "/decreaseStock")
+    Boolean decreaseStock(@RequestParam Map<String, Object> decreaseMap);
+
+    /**
+     * 回滚库存
+     * @param rollbackMap
+     * @return
+     */
+    @GetMapping(value = "/rollbackStock")
+    Boolean rollbackStock(@RequestParam Map<String, Object> rollbackMap);
 }

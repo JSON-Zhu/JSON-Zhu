@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * CartInfoController 新增购物车
@@ -67,9 +68,53 @@ public class CartInfoController {
         return Result.ok();
     }
 
+    /**
+     * 删除购物车
+     * @param id
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value = "/delCart")
+    public Result delCart(Long id){
+        cartInfoService.delCartInfo(id);
+        return Result.ok();
+    }
+
+    /**
+     * 合并购物车
+     * @param cartInfos
+     * @return : com.atguigu.gmall.common.result.Result
+     */
     @PostMapping(value = "/mergeCart")
     public Result mergeCart(@RequestBody List<CartInfo> cartInfos){
         cartInfoService.mergeCartInfo(cartInfos);
         return Result.ok();
     }
+
+    /**
+     * 查询订单确认页面的信息
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value = "/getOrderConfirm")
+    public Result getOrderConfirm(){
+        return Result.ok(cartInfoService.getOrderConfirm());
+    }
+
+    /**
+     * 下单时查询共生成订单
+     *
+     */
+    @GetMapping(value = "/getOrderAddInfo")
+    public Map<String, Object> getOrderAddInfo(){
+        return cartInfoService.getOrderConfirm();
+    }
+
+    /**
+     * 清空购物车
+     *
+     */
+    @GetMapping(value = "/removeCart")
+    public boolean removeCart(){
+        return cartInfoService.removeCart();
+    }
+
 }

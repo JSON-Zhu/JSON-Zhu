@@ -1,11 +1,14 @@
 package com.atguigu.gmall.product.service.impl;
 
+import com.atguigu.gmall.common.constant.ProductConst;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.service.ManageService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -330,6 +333,9 @@ public class ManageServiceImpl implements ManageService {
         return skuInfoIPage;
     }
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     /**
      * 更新商品上架状态
      * @param skuId
@@ -350,6 +356,13 @@ public class ManageServiceImpl implements ManageService {
         //更新装填
         skuInfo.setIsSale(Status);
         skuInfoMapper.updateById(skuInfo);
+        if(ProductConst.SKU_ON_SALE.equals(Status)){
+            //上架的商品需要写入es, 消息格式使用字符串格式
+            rabbitTemplate.convertAndSend("list_exchange","sku.up",skuId+"");
+        }else {
+            //下架从es删除
+            rabbitTemplate.convertAndSend("list_exchange","sku.down",skuId+"");
+        }
     }
 
     /**

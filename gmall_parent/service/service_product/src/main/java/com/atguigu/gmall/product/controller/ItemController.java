@@ -4,10 +4,7 @@ import com.atguigu.gmall.common.cache.GmallCache2;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -116,5 +113,25 @@ public class ItemController {
     @GmallCache2(prefix = "baseAttrInfoBySkuId:")
     public List<BaseAttrInfo> selectBaseAttrInfoBySkuId(@PathVariable(value = "skuId")Long skuId) {
         return itemService.selectBaseAttrInfoBySkuId(skuId);
+    }
+
+    /**
+     * 扣减库存
+     * @param decreaseMap
+     * @return
+     */
+    @GetMapping(value = "/decreaseStock")
+    public Boolean decreaseStock(@RequestParam Map<String, Object> decreaseMap){
+        return itemService.decreaseStock(decreaseMap);
+    }
+
+    /**
+     * 回滚库存
+     * @param rollbackMap
+     * @return
+     */
+    @GetMapping(value = "/rollbackStock")
+    public Boolean rollbackStock(@RequestParam Map<String, Object> rollbackMap){
+        return itemService.rollbackStock(rollbackMap);
     }
 }

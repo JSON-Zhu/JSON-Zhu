@@ -59,6 +59,9 @@ public class SkuInfo extends BaseEntity {
 	@TableField("is_sale")
 	private Integer isSale;
 
+	@ApiModelProperty(value = "商品库存")
+	@TableField("stock")
+	private Integer stock;
 	@TableField(exist = false)
 	List<SkuImage> skuImageList;
 

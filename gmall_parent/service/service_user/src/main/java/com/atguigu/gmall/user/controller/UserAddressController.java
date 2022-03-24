@@ -2,6 +2,7 @@ package com.atguigu.gmall.user.controller;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.user.service.UserAddressService;
+import com.atguigu.gmall.user.utils.UserThreadLocalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,6 @@ public class UserAddressController {
      */
     @GetMapping(value = "/getUserAddress")
     public Result getUserAddress(){
-        String username="banzhang";
-        return Result.ok(userAddressService.getUserAddress(username));
+        return Result.ok(userAddressService.getUserAddress());
     }
 }

@@ -15,8 +15,7 @@ public interface UserAddressService {
 
     /**
      * 查询用户的地址信息
-     * @param username
      * @return : java.util.List<com.atguigu.gmall.model.user.UserAddress>
      */
-    List<UserAddress> getUserAddress(String username);
+    List<UserAddress> getUserAddress();
 }

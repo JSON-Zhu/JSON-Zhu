@@ -3,6 +3,7 @@ package com.atguigu.gmall.list.controller;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.list.service.GoodsService;
 import com.atguigu.gmall.model.list.Goods;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,9 @@ public class GoodsController {
 
     @Autowired
     private ElasticsearchRestTemplate elasticsearchRestTemplate;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      *创建索引,创建映射

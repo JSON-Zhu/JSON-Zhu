@@ -18,6 +18,9 @@ import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author XQ.Zhu
+ */
 @Configuration
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)//激活方法上的PreAuthorize注解

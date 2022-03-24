@@ -72,4 +72,18 @@ public interface ItemService {
      * @return : java.util.List<com.atguigu.gmall.model.product.BaseAttrInfo>
      */
     List<BaseAttrInfo> selectBaseAttrInfoBySkuId(Long skuId);
+
+    /**
+     * 扣减库存
+     * @param decreaseMap
+     * @return : boolean
+     */
+    boolean decreaseStock(Map<String,Object>  decreaseMap);
+
+    /**
+     * 回滚库存
+     * @param rollbackMap
+     * @return : boolean
+     */
+    boolean rollbackStock(Map<String,Object>  rollbackMap);
 }

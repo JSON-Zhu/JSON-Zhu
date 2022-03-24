@@ -22,8 +22,10 @@ spring:
   rabbitmq:
     host: 192.168.200.128
     port: 5672
-    username: guest
-    password: guest
+    username: java0823
+    password: java0823
+    virtual-host: /java0823
+    publisher-returns: true
   redis:
     host: 192.168.200.128
     port: 6379

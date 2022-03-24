@@ -3,6 +3,7 @@ package com.atguigu.gmall.user.service.impl;
 import com.atguigu.gmall.model.user.UserAddress;
 import com.atguigu.gmall.user.mapper.UserAddressMapper;
 import com.atguigu.gmall.user.service.UserAddressService;
+import com.atguigu.gmall.user.utils.UserThreadLocalUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +26,11 @@ public class UserAddressServiceImpl implements UserAddressService {
     /**
      * 查询用户的地址信息
      *
-     * @param username
      * @return : java.util.List<com.atguigu.gmall.model.user.UserAddress>
      */
     @Override
-    public List<UserAddress> getUserAddress(String username) {
+    public List<UserAddress> getUserAddress() {
+        String username = UserThreadLocalUtils.get();
         return userAddressMapper.selectList(
                 new LambdaQueryWrapper<UserAddress>().eq(UserAddress::getUserId,username));
     }

@@ -44,5 +44,4 @@ public class CartInfo extends BaseEntity {
     // 实时价格 skuInfo.price
     @TableField(exist = false)
     BigDecimal skuPrice;
-
 }

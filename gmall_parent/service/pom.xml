@@ -22,6 +22,8 @@
         <module>service_auth</module>
         <module>service_user</module>
         <module>service_cart</module>
+        <module>service_order</module>
+        <module>service_payment</module>
     </modules>
 
     <dependencies>

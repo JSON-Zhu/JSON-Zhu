@@ -1,26 +1,23 @@
 package com.atguigu.gmall.cart.service.impl;
 
 import com.atguigu.gmall.cart.utils.CartThreadLocalUtils;
+import com.atguigu.gmall.common.constant.CartConst;
 import com.atguigu.gmall.model.cart.CartInfo;
 import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.product.feign.ProductFeign;
 import com.atguigu.gmall.cart.mapper.CartInfoMapper;
 import com.atguigu.gmall.cart.service.CartInfoService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.segments.MatchSegment;
+import com.google.common.util.concurrent.AtomicDouble;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.swing.tree.TreeNode;
-import java.io.Externalizable;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * CartInfoServiceImpl 购物车管理的实现类
@@ -163,5 +160,63 @@ public class CartInfoServiceImpl implements CartInfoService {
         cartInfos.stream().forEach(cartInfo -> {
             addCartInfo(cartInfo.getSkuId(),cartInfo.getSkuNum());
         });
+    }
+
+    /**
+     * 查询订单确认页面的信息
+     *
+     * @return : void
+     */
+    @Override
+    public Map<String, Object> getOrderConfirm() {
+        //获取当前用户名
+        String username = CartThreadLocalUtils.get();
+        //根据用户名和 isChecked查询本次购买商品
+        List<CartInfo> cartInfos = cartInfoMapper.selectList(new LambdaQueryWrapper<CartInfo>().
+                eq(CartInfo::getUserId, username).
+                eq(CartInfo::getIsChecked, CartConst.CART_CHECKED));
+        //判断返回结果
+        if(cartInfos.isEmpty()){
+            return null;
+        }
+        AtomicInteger totalNum = new AtomicInteger(0);
+        AtomicDouble totalMoney = new AtomicDouble(0);
+        List<CartInfo> cartInfoList = cartInfos.stream().map(cartInfo -> {
+            //获取skuId
+            Long skuId = cartInfo.getSkuId();
+            //查询实时价格
+            BigDecimal price = productFeign.getPrice(skuId);
+            //保存实时价格 (用户可能很久之前加入购物车,导致价格有变动)
+            cartInfo.setSkuPrice(price);
+            Integer skuNum = cartInfo.getSkuNum();
+            //数量累加
+            totalNum.getAndAdd(skuNum);
+            //单个商品的总金额
+            double total = price.doubleValue() * skuNum;
+            //使用atomicInteger防止多线程时,导致的错误计算的问题
+            totalMoney.getAndAdd(total);
+            //返回
+            return cartInfo;
+        }).collect(Collectors.toList());
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("totalNum",totalNum);
+        result.put("totalMoney",totalMoney);
+        result.put("cartInfoList",cartInfoList);
+        //返回result
+        return result;
+    }
+
+    /**
+     * 清空购物车
+     *
+     * @return : boolean
+     */
+    @Override
+    public boolean removeCart() {
+        String username = CartThreadLocalUtils.get();
+        int delete = cartInfoMapper.delete(new LambdaQueryWrapper<CartInfo>()
+                .eq(CartInfo::getUserId, username)
+                .eq(CartInfo::getIsChecked, CartConst.CART_CHECKED));
+        return delete>0?true:false;
     }
 }

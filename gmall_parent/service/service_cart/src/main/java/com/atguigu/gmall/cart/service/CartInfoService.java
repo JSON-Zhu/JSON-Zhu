@@ -3,6 +3,7 @@ package com.atguigu.gmall.cart.service;
 import com.atguigu.gmall.model.cart.CartInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * CartInfoService 购物车的接口
@@ -45,4 +46,16 @@ public interface CartInfoService {
      * @param cartInfos
      */
     void mergeCartInfo(List<CartInfo> cartInfos);
+
+    /**
+     * 查询订单确认页面的信息
+     * @return : Object
+     */
+    Map<String,Object> getOrderConfirm();
+
+    /**
+     * 清空购物车
+     * @return : boolean
+     */
+    boolean removeCart();
 }
