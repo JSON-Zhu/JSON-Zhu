@@ -13,6 +13,13 @@
 
     <description>秒杀的微服务模块</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>service-activity</finalName>
         <plugins>

@@ -73,5 +73,7 @@ public class SeckillGoods extends BaseEntity {
 	@TableField("introduction")
 	private String skuDesc;
 
+
+
 }
 
