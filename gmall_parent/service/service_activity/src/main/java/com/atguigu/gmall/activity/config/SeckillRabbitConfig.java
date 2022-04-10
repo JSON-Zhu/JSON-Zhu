@@ -14,25 +14,25 @@ public class SeckillRabbitConfig {
     /**
      * 交换机
      */
-    @Bean("seckillOrderExchange")
+    @Bean("seckillOrderQueuingExchange")
     public Exchange seckillOrderExchange(){
-        return ExchangeBuilder.directExchange("seckill_order_exchange").build();
+        return ExchangeBuilder.directExchange("seckill_order_queuing_exchange").build();
     }
 
     /**
      * 队列
      */
-    @Bean("seckillOrderQueue")
+    @Bean("seckillOrderQueuing")
     public Queue seckillOrderQueue(){
-        return QueueBuilder.durable("seckill_order_queue").build();
+        return QueueBuilder.durable("seckill_order_queuing_queue").build();
     }
 
     /**
      * 绑定
      */
     @Bean
-    public Binding seckillOrderBinding(@Qualifier("seckillOrderExchange") Exchange seckillOrderExchange,
-                                       @Qualifier("seckillOrderQueue") Queue seckillOrderQueue){
+    public Binding seckillOrderQueuingBinding(@Qualifier("seckillOrderQueuingExchange") Exchange seckillOrderExchange,
+                                       @Qualifier("seckillOrderQueuing") Queue seckillOrderQueue){
         return BindingBuilder.bind(seckillOrderQueue).to(seckillOrderExchange).with("seckill.order.add").noargs();
     }
 }

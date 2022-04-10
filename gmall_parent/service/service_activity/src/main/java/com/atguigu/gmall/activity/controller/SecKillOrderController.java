@@ -40,4 +40,15 @@ public class SecKillOrderController {
         return Result.ok(seckillOrderService.getUserRecode());
     }
 
+    /**
+     * 主动取消订单
+     * @return : com.atguigu.gmall.common.result.Result
+     */
+    @GetMapping(value = "/cancelSeckillOrder")
+    public Result cancelSeckillOrder(){
+        String username="xianqiang";
+        seckillOrderService.cancelSecKillOrder(username,"用户主动取消订单");
+        return Result.ok();
+    }
+
 }

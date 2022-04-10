@@ -1,5 +1,6 @@
 package com.atguigu.gmall.payment.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.atguigu.gmall.payment.service.WxPayService;
 import com.atguigu.gmall.payment.utils.HttpClient;
 import com.github.wxpay.sdk.WXPayConstants;
@@ -45,13 +46,11 @@ public class WxPayServiceImpl implements WxPayService {
     /**
      * 调用微信获取支付二维码
      *
-     * @param money
-     * @param orderId
-     * @param desc
+     * @param parameterMap  220410 更新参数为map类型
      * @return : java.util.Map<java.lang.String,java.lang.String>
      */
     @Override
-    public Map<String, String> getPayUrl(String money, String orderId, String desc) {
+    public Map<String, String> getPayUrl(Map<String,String> parameterMap) {
         //获取请求的统一下单的url
         String url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
         HashMap<String, String> paramMap = new HashMap<>();
@@ -59,12 +58,17 @@ public class WxPayServiceImpl implements WxPayService {
         paramMap.put("appid", appId);
         paramMap.put("mch_id", partner);
         paramMap.put("nonce_str", WXPayUtil.generateNonceStr());
-        paramMap.put("body", desc);
-        paramMap.put("out_trade_no", orderId);
-        paramMap.put("total_fee", money);
+        paramMap.put("body", parameterMap.get("desc"));
+        paramMap.put("out_trade_no", parameterMap.get("orderId"));
+        paramMap.put("total_fee", parameterMap.get("money"));
         paramMap.put("spbill_create_ip", "192.168.200.1");
         paramMap.put("notify_url", notifyUrl);
         paramMap.put("trade_type", "NATIVE");
+        //防止附加参数过大,删除部分参数
+        parameterMap.remove("desc");
+        parameterMap.remove("orderId");
+        parameterMap.remove("money");
+        paramMap.put("attach", JSONObject.toJSONString(parameterMap));
         try {
             //数据转换为xml格式,并签名
             String paramXml = WXPayUtil.generateSignedXml(paramMap, partnerkey);

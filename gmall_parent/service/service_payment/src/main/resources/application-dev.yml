@@ -70,7 +70,7 @@ weixin:
     #商户key
     partnerkey: T6m9iK73b0kn9g5v426MKfHQH7X8rKwb
     #回调地址
-    notifyUrl: http://wf3fkz.natappfree.cc/api/pay/wx/callback/notify
+    notifyUrl: http://cv5nfi.natappfree.cc/api/pay/wx/callback/notify
 #阿里支付的相关参数
 alipay_url: https://openapi.alipay.com/gateway.do
 app_id: 2021001163617452

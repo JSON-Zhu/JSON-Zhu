@@ -9,16 +9,16 @@ package com.atguigu.gmall.activity.util;
  **/
 public class SecKillOrderStatusConst {
 
-    //秒杀排队中
     /**
      *
+     * 订单状态，0未支付，1已支付,2 取消订单,3超时未支付
      */
-    public static final Integer SECKILL_ORDER_STATUS_QUEUING =1;
-    //秒杀成功等待支付
-    public static final Integer SECKILL_ORDER_STATUS_WAITING_PAY =2;
-    //秒杀失败
-    public static final Integer SECKILL_ORDER_STATUS_FAIL =3;
+    //未支付
+    public static final Integer SECKILL_ORDER_STATUS_UNPAID =0;
     //支付成功
-    public static final Integer SECKILL_ORDER_STATUS_PAY_SUCCESS =4;
-
+    public static final Integer SECKILL_ORDER_STATUS_PAID =1;
+    //取消订单
+    public static final Integer SECKILL_ORDER_STATUS_CANCELED =2;
+    //秒杀失败
+    public static final Integer SECKILL_ORDER_STATUS_TIMEOUT_UNPAID =3;
 }

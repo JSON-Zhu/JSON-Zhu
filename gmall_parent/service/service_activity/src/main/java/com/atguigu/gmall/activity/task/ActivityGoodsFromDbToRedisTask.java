@@ -5,6 +5,8 @@ import com.atguigu.gmall.activity.util.DateUtil;
 import com.atguigu.gmall.model.activity.SeckillGoods;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -47,6 +49,10 @@ public class ActivityGoodsFromDbToRedisTask{
                     DateUtil.data2str(dateMenu, DateUtil.PATTERN_YYYY_MM_DDHHMM);
             //获取时间段key的过期时间
             Date date = DateUtil.addDateHour(dateMenu, 2);
+
+            //获取过期时间的毫秒数
+            long timeToLive = date.getTime() - System.currentTimeMillis();
+
             //获取结束时间
             String endTime =
                     DateUtil.data2str(DateUtil.addDateHour(dateMenu,2),
@@ -73,11 +79,13 @@ public class ActivityGoodsFromDbToRedisTask{
                 Integer stockCount = activityGood.getStockCount();
                 String[] ids = getIds(stockCount, id);
                 redisTemplate.opsForList().leftPushAll("seckill_goods_stock_queue_"+id,ids);
+                //设置商品库存队列的过期时间
+                redisTemplate.expire("seckill_goods_stock_queue_"+id,timeToLive, TimeUnit.MILLISECONDS);
                 //创建商品的库存展示key
-                redisTemplate.opsForHash().increment("seckill_goods_stock_count"+redisKey,id+"",stockCount);
+                redisTemplate.opsForHash().increment("seckill_goods_stock_count_"+redisKey,id+"",stockCount);
             }
             //存入完成后,设置过期时间
-            setSeckillGoodsExpirationTime(redisKey,date);
+            setSeckillGoodsExpirationTime(redisKey,timeToLive);
         }
     }
 
@@ -96,21 +104,30 @@ public class ActivityGoodsFromDbToRedisTask{
         return ids;
     }
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     /**
      * 每个时间段设置过期时间
      * @param redisKey  时间段的key
-     * @param date 时间段活动的结束时间
+     * @param timeToLive 过期时间
      * @return : void
      */
-    private void setSeckillGoodsExpirationTime(String redisKey, Date date) {
+    private void setSeckillGoodsExpirationTime(String redisKey, long timeToLive) {
         //每个时间段只设置一次过期时间,利用redis中的increment做标识位
         Long increment =
                 redisTemplate.opsForHash().increment("seckill_goods_expire_count", redisKey, 1);
         if (increment>1) {
             return;
         }
-        //计算时间段的剩余时间
-        long timeToLive = date.getTime() - System.currentTimeMillis();
+        //发送延迟消息: 延迟时间=timeToLive
+        rabbitTemplate.convertAndSend("seckill_goods_exchange",
+                "seckill.goods.dead", redisKey,message -> {
+                    MessageProperties messageProperties = message.getMessageProperties();
+                    //此处过期时间再+订单过期时间+1min,防止同步时有取消订单的情况
+                    messageProperties.setExpiration(timeToLive+"60000");
+                    return message;
+                });
         //设置key的过期时间
         redisTemplate.expire(redisKey,timeToLive, TimeUnit.MILLISECONDS);
     }

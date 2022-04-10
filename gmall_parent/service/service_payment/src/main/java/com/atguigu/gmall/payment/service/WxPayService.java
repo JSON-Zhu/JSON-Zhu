@@ -14,12 +14,10 @@ public interface WxPayService {
 
     /**
      * 调用微信获取支付二维码
-     * @param money
-     * @param orderId
-     * @param desc
+     * @param paramMap
      * @return : java.util.Map<java.lang.String,java.lang.String>
      */
-    Map<String,String> getPayUrl(String money,String orderId,String desc);
+    Map<String,String> getPayUrl(Map<String,String> paramMap);
 
     /**
      * 查询订单支付结果
